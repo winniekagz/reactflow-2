@@ -42,7 +42,9 @@ export default function SignIn() {
         router.push("/dashboard");
       }
     } catch (error) {
+
       setError("An error occurred");
+      throw  error
     } finally {
       setLoading(false);
     }
@@ -95,7 +97,7 @@ export default function SignIn() {
               )}
             </Button>
             <div className="text-center text-sm">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/auth/signup"
                 className="text-blue-600 hover:underline"

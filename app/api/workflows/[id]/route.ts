@@ -4,9 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -16,7 +17,7 @@ export async function GET(
 
     const workflow = await prisma.workflow.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       include: {
@@ -44,8 +45,9 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -58,7 +60,7 @@ export async function PUT(
     // Check if workflow exists and belongs to user
     const existingWorkflow = await prisma.workflow.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     });
@@ -72,7 +74,7 @@ export async function PUT(
 
     // Update workflow
     const updatedWorkflow = await prisma.workflow.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         name,
         description,
@@ -83,19 +85,19 @@ export async function PUT(
     if (nodes) {
       // Delete existing nodes
       await prisma.node.deleteMany({
-        where: { workflowId: params.id },
+        where: { workflowId: id },
       });
 
       // Create new nodes
       if (nodes.length > 0) {
         await prisma.node.createMany({
-          data: nodes.map((node: any) => ({
+          data: nodes.map((node: { id: string; type: string; position: { x: number; y: number }; data: unknown }) => ({
             id: node.id,
             type: node.type,
             positionX: node.position.x,
             positionY: node.position.y,
             data: node.data,
-            workflowId: params.id,
+            workflowId: id,
           })),
         });
       }
@@ -105,19 +107,19 @@ export async function PUT(
     if (edges) {
       // Delete existing edges
       await prisma.edge.deleteMany({
-        where: { workflowId: params.id },
+        where: { workflowId: id },
       });
 
       // Create new edges
       if (edges.length > 0) {
         await prisma.edge.createMany({
-          data: edges.map((edge: any) => ({
+          data: edges.map((edge: { id: string; source: string; target: string; data?: unknown }) => ({
             id: edge.id,
             source: edge.source,
             target: edge.target,
             sourceNodeId: edge.source,
             targetNodeId: edge.target,
-            workflowId: params.id,
+            workflowId: id,
             data: edge.data || {},
           })),
         });
@@ -135,9 +137,10 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -148,7 +151,7 @@ export async function DELETE(
     // Check if workflow exists and belongs to user
     const workflow = await prisma.workflow.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     });
@@ -162,7 +165,7 @@ export async function DELETE(
 
     // Delete workflow (cascade will delete nodes and edges)
     await prisma.workflow.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Workflow deleted successfully" });

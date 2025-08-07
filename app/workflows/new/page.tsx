@@ -19,7 +19,7 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function NewWorkflowPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -66,7 +66,7 @@ export default function NewWorkflowPage() {
         const data = await response.json();
         setError(data.error || "Failed to create workflow");
       }
-    } catch (error) {
+    } catch (_error) {
       setError("An error occurred");
     } finally {
       setLoading(false);

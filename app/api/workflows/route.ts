@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const formattedWorkflows = workflows.map((workflow) => ({
+    const formattedWorkflows = workflows.map((workflow: { id: string; name: string; description: string | null; createdAt: Date; updatedAt: Date; nodes: Array<unknown>; edges: Array<unknown> }) => ({
       id: workflow.id,
       name: workflow.name,
       description: workflow.description,

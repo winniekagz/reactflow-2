@@ -3,19 +3,16 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+// import {
+//   CardContent,
+// } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Save, ArrowLeft, Play, Settings } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { ReactFlowInstance, NodeChange, EdgeChange, Connection } from "reactflow";
 
 // Import ReactFlow CSS
 import "reactflow/dist/style.css";
@@ -72,52 +69,68 @@ interface Workflow {
   id: string;
   name: string;
   description: string;
-  nodes: any[];
-  edges: any[];
+  nodes: Array<{
+    id: string;
+    type: string;
+    positionX: number;
+    positionY: number;
+    data: unknown;
+  }>;
+  edges: Array<{
+    id: string;
+    source: string;
+    target: string;
+    data?: unknown;
+  }>;
 }
 
-export default function WorkflowBuilderPage({
+export default async function WorkflowBuilderPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+  
+  return <WorkflowBuilderClient id={id} />;
+}
+
+function WorkflowBuilderClient({ id }: { id: string }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
-  const [nodes, setNodes] = useState<any[]>([]);
-  const [edges, setEdges] = useState<any[]>([]);
+  const [nodes, setNodes] = useState<Array<{
+    id: string;
+    type: string;
+    position: { x: number; y: number };
+    data: unknown;
+  }>>([]);
+  const [edges, setEdges] = useState<Array<{
+    id: string;
+    source: string;
+    target: string;
+    data?: unknown;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const reactFlowInstance = useRef<any>(null);
+  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/signin");
-      return;
-    }
-
-    if (status === "authenticated") {
-      fetchWorkflow();
-    }
-  }, [status, router, params.id]);
-
-  const fetchWorkflow = async () => {
+  const fetchWorkflow = useCallback(async () => {
     try {
-      const response = await fetch(`/api/workflows/${params.id}`);
+      const response = await fetch(`/api/workflows/${id}`);
       if (response.ok) {
         const data = await response.json();
         setWorkflow(data);
 
         // Convert database format to ReactFlow format
-        const flowNodes = data.nodes.map((node: any) => ({
+        const flowNodes = data.nodes.map((node: { id: string; type: string; positionX: number; positionY: number; data: unknown }) => ({
           id: node.id,
           type: node.type,
           position: { x: node.positionX, y: node.positionY },
           data: node.data,
         }));
 
-        const flowEdges = data.edges.map((edge: any) => ({
+        const flowEdges = data.edges.map((edge: { id: string; source: string; target: string; data?: unknown }) => ({
           id: edge.id,
           source: edge.source,
           target: edge.target,
@@ -135,14 +148,25 @@ export default function WorkflowBuilderPage({
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const onNodesChange = useCallback((changes: any) => {
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
+      return;
+    }
+
+    if (status === "authenticated") {
+      fetchWorkflow();
+    }
+  }, [status, router, id, fetchWorkflow]);
+
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((nds) => {
       // Simple implementation for node changes
       return nds.map((node) => {
-        const change = changes.find((c: any) => c.id === node.id);
-        if (change && change.type === "position") {
+        const change = changes.find((c) => 'id' in c && c.id === node.id);
+        if (change && change.type === "position" && 'position' in change && change.position) {
           return { ...node, position: change.position };
         }
         return node;
@@ -150,27 +174,35 @@ export default function WorkflowBuilderPage({
     });
   }, []);
 
-  const onEdgesChange = useCallback((changes: any) => {
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
     setEdges((eds) => {
       // Simple implementation for edge changes
       return eds.filter((edge) => {
-        const change = changes.find((c: any) => c.id === edge.id);
+        const change = changes.find((c) => 'id' in c && c.id === edge.id);
         return !change || change.type !== "remove";
       });
     });
   }, []);
 
-  const onConnect = useCallback((params: any) => {
-    setEdges((eds) => [...eds, { id: `e${Date.now()}`, ...params }]);
+  const onConnect = useCallback((params: Connection) => {
+    if (params.source && params.target) {
+      setEdges((eds) => [...eds, { 
+        id: `e${Date.now()}`, 
+        source: params.source as string, 
+        target: params.target as string,
+        sourceHandle: params.sourceHandle || undefined,
+        targetHandle: params.targetHandle || undefined
+      }]);
+    }
   }, []);
 
-  const onDragOver = useCallback((event: any) => {
+  const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
-    (event: any) => {
+    (event: React.DragEvent) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData("application/reactflow");
@@ -196,7 +228,7 @@ export default function WorkflowBuilderPage({
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await fetch(`/api/workflows/${params.id}`, {
+      const response = await fetch(`/api/workflows/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

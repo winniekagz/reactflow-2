@@ -1,10 +1,11 @@
 "use client";
 
 import { memo } from "react";
-import { Handle, Position } from "reactflow";
+import { Handle, Position, NodeProps } from "reactflow";
 import { GitBranch } from "lucide-react";
 
-const ConditionNode = memo(({ data }: { data: any }) => {
+const ConditionNode = memo(({ data: _data }: NodeProps) => {
+  console.log('data',_data)
   return (
     <div className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-blue-600 min-w-[140px]">
       <Handle type="target" position={Position.Top} className="w-2 h-2" />

@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, LogOut, Menu } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 
 export function Navigation() {
   const { data: session, status } = useSession();
