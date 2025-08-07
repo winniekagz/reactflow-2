@@ -128,7 +128,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="text-2xl font-bold">1</div>
               <p className="text-xs text-muted-foreground">
-                You're the only user
+               { "You're the only user"}
               </p>
             </CardContent>
           </Card>

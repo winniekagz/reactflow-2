@@ -3,19 +3,17 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+// import {
+//   CardContent,
+// } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Save, ArrowLeft, Play, Settings } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { ReactFlowInstance, NodeChange, EdgeChange, Connection } from "reactflow";
+import { useNodesState, useEdgesState, addEdge } from "reactflow";
 
 // Import ReactFlow CSS
 import "reactflow/dist/style.css";
@@ -72,52 +70,58 @@ interface Workflow {
   id: string;
   name: string;
   description: string;
-  nodes: any[];
-  edges: any[];
+  nodes: Array<{
+    id: string;
+    type: string;
+    positionX: number;
+    positionY: number;
+    data: unknown;
+  }>;
+  edges: Array<{
+    id: string;
+    source: string;
+    target: string;
+    data?: unknown;
+  }>;
 }
 
-export default function WorkflowBuilderPage({
+export default async function WorkflowBuilderPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+  
+  return <WorkflowBuilderClient id={id} />;
+}
+
+function WorkflowBuilderClient({ id }: { id: string }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
-  const [nodes, setNodes] = useState<any[]>([]);
-  const [edges, setEdges] = useState<any[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const reactFlowInstance = useRef<any>(null);
+  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/signin");
-      return;
-    }
-
-    if (status === "authenticated") {
-      fetchWorkflow();
-    }
-  }, [status, router, params.id]);
-
-  const fetchWorkflow = async () => {
+  const fetchWorkflow = useCallback(async () => {
     try {
-      const response = await fetch(`/api/workflows/${params.id}`);
+      const response = await fetch(`/api/workflows/${id}`);
       if (response.ok) {
         const data = await response.json();
         setWorkflow(data);
 
         // Convert database format to ReactFlow format
-        const flowNodes = data.nodes.map((node: any) => ({
+        const flowNodes = data.nodes.map((node: { id: string; type: string; positionX: number; positionY: number; data: unknown }) => ({
           id: node.id,
           type: node.type,
           position: { x: node.positionX, y: node.positionY },
           data: node.data,
         }));
 
-        const flowEdges = data.edges.map((edge: any) => ({
+        const flowEdges = data.edges.map((edge: { id: string; source: string; target: string; data?: unknown }) => ({
           id: edge.id,
           source: edge.source,
           target: edge.target,
@@ -135,42 +139,32 @@ export default function WorkflowBuilderPage({
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const onNodesChange = useCallback((changes: any) => {
-    setNodes((nds) => {
-      // Simple implementation for node changes
-      return nds.map((node) => {
-        const change = changes.find((c: any) => c.id === node.id);
-        if (change && change.type === "position") {
-          return { ...node, position: change.position };
-        }
-        return node;
-      });
-    });
-  }, []);
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
+      return;
+    }
 
-  const onEdgesChange = useCallback((changes: any) => {
-    setEdges((eds) => {
-      // Simple implementation for edge changes
-      return eds.filter((edge) => {
-        const change = changes.find((c: any) => c.id === edge.id);
-        return !change || change.type !== "remove";
-      });
-    });
-  }, []);
+    if (status === "authenticated") {
+      fetchWorkflow();
+    }
+  }, [status, router, id, fetchWorkflow]);
 
-  const onConnect = useCallback((params: any) => {
-    setEdges((eds) => [...eds, { id: `e${Date.now()}`, ...params }]);
-  }, []);
 
-  const onDragOver = useCallback((event: any) => {
+
+  const onConnect = useCallback((params: Connection) => {
+    setEdges((eds) => addEdge(params, eds));
+  }, [setEdges]);
+
+  const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
-    (event: any) => {
+    (event: React.DragEvent) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData("application/reactflow");
@@ -196,7 +190,7 @@ export default function WorkflowBuilderPage({
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await fetch(`/api/workflows/${params.id}`, {
+      const response = await fetch(`/api/workflows/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -260,14 +254,8 @@ export default function WorkflowBuilderPage({
           <div className="flex items-center space-x-2">
             <Badge variant="outline">{nodes.length} nodes</Badge>
             <Badge variant="outline">{edges.length} connections</Badge>
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="outline" size="sm">
-              <Play className="h-4 w-4 mr-2" />
-              Test
-            </Button>
+          
+           
             <Button onClick={handleSave} disabled={saving}>
               {saving ? (
                 <>

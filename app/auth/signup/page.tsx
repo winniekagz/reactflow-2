@@ -50,6 +50,7 @@ export default function SignUp() {
       }
     } catch (error) {
       setError("An error occurred");
+      throw error
     } finally {
       setLoading(false);
     }

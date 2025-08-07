@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Format recent workflows
-    const recentWorkflows = workflows.map((workflow) => ({
+    const recentWorkflows = workflows.map((workflow: { id: string; name: string; description: string | null; createdAt: Date; nodes: Array<unknown> }) => ({
       id: workflow.id,
       name: workflow.name,
       description: workflow.description || "",
