@@ -13,6 +13,7 @@ import { Loader2, Save, ArrowLeft, Play, Settings } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import type { ReactFlowInstance, NodeChange, EdgeChange, Connection } from "reactflow";
+import { useNodesState, useEdgesState, addEdge } from "reactflow";
 
 // Import ReactFlow CSS
 import "reactflow/dist/style.css";
@@ -98,18 +99,8 @@ function WorkflowBuilderClient({ id }: { id: string }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
-  const [nodes, setNodes] = useState<Array<{
-    id: string;
-    type: string;
-    position: { x: number; y: number };
-    data: unknown;
-  }>>([]);
-  const [edges, setEdges] = useState<Array<{
-    id: string;
-    source: string;
-    target: string;
-    data?: unknown;
-  }>>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -161,40 +152,11 @@ function WorkflowBuilderClient({ id }: { id: string }) {
     }
   }, [status, router, id, fetchWorkflow]);
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((nds) => {
-      // Simple implementation for node changes
-      return nds.map((node) => {
-        const change = changes.find((c) => 'id' in c && c.id === node.id);
-        if (change && change.type === "position" && 'position' in change && change.position) {
-          return { ...node, position: change.position };
-        }
-        return node;
-      });
-    });
-  }, []);
 
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((eds) => {
-      // Simple implementation for edge changes
-      return eds.filter((edge) => {
-        const change = changes.find((c) => 'id' in c && c.id === edge.id);
-        return !change || change.type !== "remove";
-      });
-    });
-  }, []);
 
   const onConnect = useCallback((params: Connection) => {
-    if (params.source && params.target) {
-      setEdges((eds) => [...eds, { 
-        id: `e${Date.now()}`, 
-        source: params.source as string, 
-        target: params.target as string,
-        sourceHandle: params.sourceHandle || undefined,
-        targetHandle: params.targetHandle || undefined
-      }]);
-    }
-  }, []);
+    setEdges((eds) => addEdge(params, eds));
+  }, [setEdges]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -292,14 +254,8 @@ function WorkflowBuilderClient({ id }: { id: string }) {
           <div className="flex items-center space-x-2">
             <Badge variant="outline">{nodes.length} nodes</Badge>
             <Badge variant="outline">{edges.length} connections</Badge>
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="outline" size="sm">
-              <Play className="h-4 w-4 mr-2" />
-              Test
-            </Button>
+          
+           
             <Button onClick={handleSave} disabled={saving}>
               {saving ? (
                 <>
