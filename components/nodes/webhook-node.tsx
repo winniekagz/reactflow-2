@@ -5,7 +5,6 @@ import { Handle, Position, NodeProps } from "reactflow";
 import { Globe } from "lucide-react";
 
 const WebhookNode = memo(({ data: _data }: NodeProps) => {
-    console.log('data',_data)
   return (
     <div className="bg-purple-500 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-purple-600 min-w-[120px]">
       <Handle type="target" position={Position.Top} className="w-2 h-2" />

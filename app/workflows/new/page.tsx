@@ -84,7 +84,6 @@ export default function NewWorkflowPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
           <Link
             href="/workflows"
@@ -101,7 +100,6 @@ export default function NewWorkflowPage() {
           </p>
         </div>
 
-        {/* Form */}
         <Card>
           <CardHeader>
             <CardTitle>Workflow Details</CardTitle>

@@ -108,7 +108,6 @@ export default function WorkflowsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -126,7 +125,6 @@ export default function WorkflowsPage() {
           </div>
         </div>
 
-        {/* Search and Filters */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
@@ -146,7 +144,6 @@ export default function WorkflowsPage() {
           </CardContent>
         </Card>
 
-        {/* Workflows Grid */}
         {filteredWorkflows.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
