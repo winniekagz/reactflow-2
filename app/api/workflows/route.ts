@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { workflowSchema } from "@/lib/validations";
 
 export async function GET() {
   try {
@@ -52,11 +53,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, description } = await request.json();
-
-    if (!name) {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    const body = await request.json();
+    
+    // Validate request body with Zod
+    const validationResult = workflowSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      return NextResponse.json({ 
+        error: "Validation failed", 
+        details: errors 
+      }, { status: 400 });
     }
+
+    const { name, description } = validationResult.data;
 
     const workflow = await prisma.workflow.create({
       data: {

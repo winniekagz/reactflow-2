@@ -3,6 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
   CardContent,
@@ -17,14 +19,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { workflowSchema, type WorkflowData } from "@/lib/validations";
 
 export default function NewWorkflowPage() {
   const { status } = useSession();
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<WorkflowData>({
+    resolver: zodResolver(workflowSchema),
+  });
 
   if (status === "loading") {
     return (
@@ -42,8 +51,7 @@ export default function NewWorkflowPage() {
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: WorkflowData) => {
     setLoading(true);
     setError("");
 
@@ -54,8 +62,8 @@ export default function NewWorkflowPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
-          description,
+          name: data.name,
+          description: data.description,
         }),
       });
 
@@ -63,8 +71,8 @@ export default function NewWorkflowPage() {
         const workflow = await response.json();
         router.push(`/workflows/${workflow.id}/edit`);
       } else {
-        const data = await response.json();
-        setError(data.error || "Failed to create workflow");
+        const responseData = await response.json();
+        setError(responseData.error || "Failed to create workflow");
       }
     } catch (_error) {
       setError("An error occurred");
@@ -102,27 +110,32 @@ export default function NewWorkflowPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Workflow Name *</Label>
                 <Input
                   id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  {...register("name")}
                   placeholder="Enter workflow name"
-                  required
+                  className={errors.name ? "border-red-500" : ""}
                 />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  {...register("description")}
                   placeholder="Describe what this workflow does"
                   rows={3}
+                  className={errors.description ? "border-red-500" : ""}
                 />
+                {errors.description && (
+                  <p className="text-sm text-red-500">{errors.description.message}</p>
+                )}
               </div>
 
               {error && (
@@ -137,7 +150,7 @@ export default function NewWorkflowPage() {
                     Cancel
                   </Button>
                 </Link>
-                <Button type="submit" disabled={loading || !name.trim()}>
+                <Button type="submit" disabled={loading}>
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
