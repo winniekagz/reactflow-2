@@ -2,19 +2,25 @@ version: "3.8"
 
 services:
   app:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/workflow_builder
       - NEXTAUTH_SECRET=your-secret-key-here
       - NEXTAUTH_URL=http://localhost:3000
+      - NODE_ENV=development
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - workflow-network
-    command: ["./scripts/start.sh", "npm", "start"]
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npx prisma migrate deploy && npm run dev"
 
   postgres:
     image: postgres:15-alpine
@@ -40,4 +46,4 @@ volumes:
 
 networks:
   workflow-network:
-    driver: bridge
+    driver: bridge 
