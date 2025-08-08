@@ -22,27 +22,27 @@ A visual workflow builder with drag-and-drop interface built using Next.js, Reac
 ## 🏃‍♂️ Quick Start
 
 ### Docker (Recommended)
-```bash
+   ```bash
 git clone <repo-url>
-cd workflow-builder
-cp env.example .env
-docker-compose up --build
-```
+   cd workflow-builder
+   cp env.example .env
+   docker-compose up --build
+   ```
 
 Visit http://localhost:3000
 
 **Test Account:**
-- Email: `test@example.com`
-- Password: `test123`
+     - Email: `test@example.com`
+     - Password: `test123`
 
 ### Local Development
-```bash
-npm install
-cp env.example .env
-npx prisma generate
-npx prisma db push
-npm run dev
-```
+   ```bash
+   npm install
+   cp env.example .env
+   npx prisma generate
+   npx prisma db push
+   npm run dev
+   ```
 
 ## 📁 Project Structure
 

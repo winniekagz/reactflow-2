@@ -6,10 +6,10 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Save, ArrowLeft, Play, Settings } from "lucide-react";
+import { Loader2, Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import type { ReactFlowInstance, NodeChange, EdgeChange, Connection } from "reactflow";
+import type { ReactFlowInstance, Connection } from "reactflow";
 import { useNodesState, useEdgesState, addEdge } from "reactflow";
 import "reactflow/dist/style.css";
 const ReactFlow = dynamic(

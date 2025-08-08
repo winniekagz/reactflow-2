@@ -16,11 +16,11 @@ export function Navigation() {
 
   if (status === "loading") {
     return (
-      <nav className="border-b bg-white">
+      <nav className="border-b bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold">
+              <Link href="/" className="text-xl font-bold text-primary-600">
                 Workflow Builder
               </Link>
             </div>
@@ -31,11 +31,11 @@ export function Navigation() {
   }
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold">
+            <Link href="/" className="text-xl font-bold text-primary-600">
               Workflow Builder
             </Link>
           </div>
@@ -70,7 +70,7 @@ export function Navigation() {
                   <Button variant="ghost">Sign In</Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button>Sign Up</Button>
+                  <Button variant="contained">Sign Up</Button>
                 </Link>
               </>
             )}

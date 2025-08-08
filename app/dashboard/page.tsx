@@ -138,7 +138,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle>Recent Workflows</CardTitle>
                 <Link href="/workflows">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outlined" size="sm">
                     <Plus className="h-4 w-4 mr-2" />
                     New Workflow
                   </Button>
@@ -183,7 +183,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <Link href={`/workflows/${workflow.id}`}>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="text" size="sm">
                           View
                         </Button>
                       </Link>
@@ -207,7 +207,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
               <Link href="/workflows">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outlined" className="w-full justify-start">
                   <Workflow className="h-4 w-4 mr-2" />
                   View All Workflows
                 </Button>

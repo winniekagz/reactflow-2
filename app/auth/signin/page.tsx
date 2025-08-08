@@ -97,10 +97,10 @@ export default function SignIn() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading} startIcon={loading?<Loader2 className="mr-2 h-4 w-4 animate-spin" />:<div></div>}>
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  
                   Signing in...
                 </>
               ) : (
@@ -108,7 +108,7 @@ export default function SignIn() {
               )}
             </Button>
             <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
+              {"Don't have an account?"}
               <Link
                 href="/auth/signup"
                 className="text-blue-600 hover:underline"

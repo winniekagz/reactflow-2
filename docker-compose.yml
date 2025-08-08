@@ -10,12 +10,14 @@ services:
       - NEXTAUTH_SECRET=your-secret-key-here
       - NEXTAUTH_URL=http://localhost:3000
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/node_modules
     networks:
       - workflow-network
+    restart: unless-stopped
 
   postgres:
     image: postgres:15-alpine
@@ -30,6 +32,12 @@ services:
       - ./prisma/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     networks:
       - workflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   postgres_data:

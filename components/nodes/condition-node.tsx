@@ -6,7 +6,7 @@ import { GitBranch } from "lucide-react";
 
 const ConditionNode = memo(({ data: _data }: NodeProps) => {
   return (
-    <div className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-blue-600 min-w-[140px]">
+    <div className="bg-info text-white px-4 py-2 rounded-lg shadow-lg border-2 border-info/60 min-w-[140px] hover:shadow-xl transition-shadow">
       <Handle type="target" position={Position.Top} className="w-2 h-2" />
       <div className="flex items-center space-x-2">
         <GitBranch className="h-4 w-4" />

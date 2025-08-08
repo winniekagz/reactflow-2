@@ -117,8 +117,8 @@ export default function WorkflowsPage() {
               </p>
             </div>
             <Link href="/workflows/new">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button variant='contained' startIcon={ <Plus className="h-4 w-4 mr-2" />}>
+   
                 New Workflow
               </Button>
             </Link>
@@ -185,7 +185,7 @@ export default function WorkflowsPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Link href={`/workflows/${workflow.id}`}>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" >
                           <Eye className="h-4 w-4" />
                         </Button>
                       </Link>

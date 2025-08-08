@@ -6,7 +6,7 @@ import { Globe } from "lucide-react";
 
 const WebhookNode = memo(({ data: _data }: NodeProps) => {
   return (
-    <div className="bg-purple-500 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-purple-600 min-w-[120px]">
+    <div className="bg-secondary text-white px-4 py-2 rounded-lg shadow-lg border-2 border-secondary/60 min-w-[120px] hover:shadow-xl transition-shadow">
       <Handle type="target" position={Position.Top} className="w-2 h-2" />
       <div className="flex items-center space-x-2">
         <Globe className="h-4 w-4" />

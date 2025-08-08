@@ -10,8 +10,7 @@ import { ArrowRight, Workflow, Zap, BarChart3 } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-background">
       <section className="pt-20 pb-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
@@ -23,13 +22,13 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
-              <Button size="lg" className="text-lg px-8 py-3">
+              <Button variant="contained" size="lg" className="text-lg px-8 py-3" endIcon={    <ArrowRight className="ml-2 h-5 w-5" />}>
                 Get Started
-                <ArrowRight className="ml-2 h-5 w-5" />
+            
               </Button>
             </Link>
             <Link href="/auth/signin">
-              <Button variant="outline" size="lg" className="text-lg px-8 py-3">
+              <Button variant="outlined" size="lg" className="text-lg px-8 py-3">
                 Sign In
               </Button>
             </Link>
@@ -37,16 +36,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Powerful Features
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Workflow className="h-12 w-12 mx-auto text-blue-600 mb-4" />
+                <Workflow className="h-12 w-12 mx-auto text-primary-600 mb-4" />
                 <CardTitle>Visual Builder</CardTitle>
                 <CardDescription>
                   Drag and drop nodes to create complex workflows with an
@@ -55,9 +53,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Zap className="h-12 w-12 mx-auto text-green-600 mb-4" />
+                <Zap className="h-12 w-12 mx-auto text-success-600 mb-4" />
                 <CardTitle>Smart Automation</CardTitle>
                 <CardDescription>
                   Connect nodes with intelligent routing and conditional logic
@@ -65,9 +63,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardHeader>
-                <BarChart3 className="h-12 w-12 mx-auto text-purple-600 mb-4" />
+                <BarChart3 className="h-12 w-12 mx-auto text-secondary-600 mb-4" />
                 <CardTitle>Analytics</CardTitle>
                 <CardDescription>
                   Track workflow performance and get insights into your
@@ -79,7 +77,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Node Types Section */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
@@ -90,38 +87,38 @@ export default function Home() {
               {
                 name: "Start",
                 description: "Entry point of the workflow",
-                color: "bg-green-100 text-green-800",
+                color: "bg-success-100 text-success-800 border-success-200",
               },
               {
                 name: "Condition",
                 description: "Evaluate conditions and route accordingly",
-                color: "bg-blue-100 text-blue-800",
+                color: "bg-info-100 text-info-800 border-info-200",
               },
               {
                 name: "Delay",
                 description: "Add time delays to your workflow",
-                color: "bg-yellow-100 text-yellow-800",
+                color: "bg-warning-100 text-warning-800 border-warning-200",
               },
               {
                 name: "Webhook",
                 description: "Make HTTP requests to external services",
-                color: "bg-purple-100 text-purple-800",
+                color: "bg-secondary-100 text-secondary-800 border-secondary-200",
               },
               {
                 name: "Logger",
                 description: "Log information for debugging",
-                color: "bg-gray-100 text-gray-800",
+                color: "bg-neutral-100 text-neutral-800 border-neutral-200",
               },
               {
                 name: "End",
                 description: "Mark the end of a workflow",
-                color: "bg-red-100 text-red-800",
+                color: "bg-error-100 text-error-800 border-error-200",
               },
             ].map((node) => (
-              <Card key={node.name}>
+              <Card key={node.name} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${node.color}`}
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${node.color}`}
                   >
                     {node.name}
                   </div>
@@ -135,9 +132,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
+
+
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Ready to Build Your First Workflow?
           </h2>
@@ -145,9 +143,9 @@ export default function Home() {
             Join thousands of users who are already automating their processes
           </p>
           <Link href="/auth/signup">
-            <Button size="lg" className="text-lg px-8 py-3">
+            <Button variant="contained" size="lg" className="text-lg px-8 py-3" endIcon={ <ArrowRight className="ml-2 h-5 w-5" />}>
               Start Building Now
-              <ArrowRight className="ml-2 h-5 w-5" />
+             
             </Button>
           </Link>
         </div>

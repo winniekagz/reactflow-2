@@ -6,7 +6,7 @@ import { FileText } from "lucide-react";
 
 const LoggerNode = memo(({ data: _data }: NodeProps) => {
   return (
-    <div className="bg-gray-500 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-gray-600 min-w-[120px]">
+    <div className="bg-neutral-600 text-white px-4 py-2 rounded-lg shadow-lg border-2 border-neutral-500 min-w-[120px] hover:shadow-xl transition-shadow">
       <Handle type="target" position={Position.Top} className="w-2 h-2" />
       <div className="flex items-center space-x-2">
         <FileText className="h-4 w-4" />
