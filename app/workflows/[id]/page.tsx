@@ -11,7 +11,7 @@ import {
   ArrowLeft, 
   Edit, 
   Trash2, 
-  Play, 
+
   Calendar,
   User,
   Settings,
@@ -184,11 +184,6 @@ export default function WorkflowViewPage() {
     }
   };
 
-  const handleExecute = () => {
-    // TODO: Implement workflow execution
-    alert("Workflow execution is not yet implemented");
-  };
-
   if (status === "loading" || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -235,7 +230,6 @@ export default function WorkflowViewPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -260,10 +254,6 @@ export default function WorkflowViewPage() {
               <Badge variant="outline">
                 {edges.length} connection{edges.length !== 1 ? 's' : ''}
               </Badge>
-              <Button onClick={handleExecute} variant="default">
-                <Play className="mr-2 h-4 w-4" />
-                Execute
-              </Button>
               <Link href={`/workflows/${id}/edit`}>
                 <Button variant="outline">
                   <Edit className="mr-2 h-4 w-4" />
@@ -311,7 +301,6 @@ export default function WorkflowViewPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Workflow Info Sidebar */}
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
@@ -348,7 +337,6 @@ export default function WorkflowViewPage() {
               </CardContent>
             </Card>
 
-            {/* Node Types Summary */}
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="text-lg">Node Types</CardTitle>
@@ -381,7 +369,6 @@ export default function WorkflowViewPage() {
             </Card>
           </div>
 
-          {/* Workflow Visualization */}
           <div className="lg:col-span-3">
             <Card className="h-[600px]">
               <CardHeader>
