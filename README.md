@@ -89,6 +89,7 @@ GitHub Actions pipeline with:
 
 This project demonstrates:
 - Modern React patterns with TypeScript
+- Form validation with React Hook Form + Zod
 - Full-stack Next.js development
 - Database design with Prisma
 - Docker containerization
