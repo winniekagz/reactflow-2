@@ -24,7 +24,7 @@ A visual workflow builder with drag-and-drop interface built using Next.js, Reac
 ### Docker (Recommended)
 ```bash
 git clone <repo-url>
-cd workflow-builder
+cd reactflow-2
 cp env.example .env
 docker-compose up --build
 ```
