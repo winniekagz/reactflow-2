@@ -3,9 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
-// import {
-//   CardContent,
-// } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -14,11 +11,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import type { ReactFlowInstance, NodeChange, EdgeChange, Connection } from "reactflow";
 import { useNodesState, useEdgesState, addEdge } from "reactflow";
-
-// Import ReactFlow CSS
 import "reactflow/dist/style.css";
-
-// Dynamically import ReactFlow to avoid SSR issues
 const ReactFlow = dynamic(
   () => import("reactflow").then((mod) => ({ default: mod.default })),
   { ssr: false }
@@ -35,8 +28,6 @@ const MiniMap = dynamic(
   () => import("reactflow").then((mod) => ({ default: mod.MiniMap })),
   { ssr: false }
 );
-
-// Import custom nodes
 const StartNode = dynamic(() => import("@/components/nodes/start-node"), {
   ssr: false,
 });
@@ -113,7 +104,6 @@ function WorkflowBuilderClient({ id }: { id: string }) {
         const data = await response.json();
         setWorkflow(data);
 
-        // Convert database format to ReactFlow format
         const flowNodes = data.nodes.map((node: { id: string; type: string; positionX: number; positionY: number; data: unknown }) => ({
           id: node.id,
           type: node.type,
@@ -151,8 +141,6 @@ function WorkflowBuilderClient({ id }: { id: string }) {
       fetchWorkflow();
     }
   }, [status, router, id, fetchWorkflow]);
-
-
 
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
@@ -204,8 +192,7 @@ function WorkflowBuilderClient({ id }: { id: string }) {
       });
 
       if (response.ok) {
-        // Show success message
-        console.log("Workflow saved successfully");
+        
       } else {
         setError("Failed to save workflow");
       }
@@ -234,7 +221,6 @@ function WorkflowBuilderClient({ id }: { id: string }) {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
       <div className="bg-white border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -254,8 +240,6 @@ function WorkflowBuilderClient({ id }: { id: string }) {
           <div className="flex items-center space-x-2">
             <Badge variant="outline">{nodes.length} nodes</Badge>
             <Badge variant="outline">{edges.length} connections</Badge>
-          
-           
             <Button onClick={handleSave} disabled={saving}>
               {saving ? (
                 <>
@@ -273,14 +257,12 @@ function WorkflowBuilderClient({ id }: { id: string }) {
         </div>
       </div>
 
-      {/* Error Alert */}
       {error && (
         <Alert variant="destructive" className="mx-6 mt-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {/* Node Palette */}
       <div className="bg-gray-50 border-b px-6 py-3">
         <div className="flex items-center space-x-4">
           <span className="text-sm font-medium text-gray-700">Nodes:</span>
@@ -307,7 +289,6 @@ function WorkflowBuilderClient({ id }: { id: string }) {
         </div>
       </div>
 
-      {/* ReactFlow Canvas */}
       <div className="flex-1">
         <ReactFlow
           nodes={nodes}

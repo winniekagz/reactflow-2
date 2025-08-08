@@ -54,8 +54,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    
-    // Validate request body with Zod
     const validationResult = workflowSchema.safeParse(body);
     
     if (!validationResult.success) {

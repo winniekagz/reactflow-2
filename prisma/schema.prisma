@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -34,10 +31,10 @@ model Workflow {
 
 model Node {
   id        String   @id @default(cuid())
-  type      String   // start, condition, delay, webhook, logger, end
+  type      String
   positionX Float
   positionY Float
-  data      Json     // Store node-specific data
+  data      Json
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   sourceEdges Edge[]  @relation("SourceNode")
@@ -56,7 +53,7 @@ model Edge {
   targetNode Node     @relation("TargetNode", fields: [targetNodeId], references: [id], onDelete: Cascade)
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  data       Json?    // Store edge-specific data
+  data       Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 } 
