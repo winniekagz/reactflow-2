@@ -199,7 +199,7 @@ export default function Dashboard() {
               <CardTitle>Quick Actions</CardTitle>
               <CardDescription>Get started with common tasks</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 flex flex-col gap-4">
+            <CardContent className="space-y-4 flex flex-col ">
               <Link href="/workflows/new">
                 <Button className="w-full justify-start">
                   <Plus className="h-4 w-4 mr-2" />
