@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build: .
@@ -14,7 +12,7 @@ services:
         condition: service_healthy
     networks:
       - workflow-network
-    command: ["./scripts/start.sh", "npm", "start"]
+    command: ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma generate && npm start"]
 
   postgres:
     image: postgres:15-alpine
