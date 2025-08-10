@@ -21,7 +21,7 @@ A visual workflow builder with drag-and-drop interface built using Next.js, Reac
 
 ## 🏃‍♂️ Quick Start
 
-### Docker (Recommended)
+### Docker 
 ```bash
 git clone <repo-url>
 cd reactflow-2
