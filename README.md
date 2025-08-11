@@ -35,12 +35,15 @@ Visit http://localhost:3000
 - Email: `test@example.com`
 - Password: `test123`
 
+The database will be automatically seeded with a test user on first run.
+
 ### Local Development
 ```bash
 npm install
 cp env.example .env
 npx prisma generate
 npx prisma db push
+npx prisma db seed
 npm run dev
 ```
 

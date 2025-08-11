@@ -44,7 +44,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
-RUN chmod +x /app/scripts/start.sh
+
 # Fix permissions for the nextjs user
 RUN chown -R nextjs:nodejs /app/node_modules
 
