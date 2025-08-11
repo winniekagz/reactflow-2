@@ -12,7 +12,12 @@ services:
         condition: service_healthy
     networks:
       - workflow-network
-    command: ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma generate && npm start"]
+    command:
+      [
+        "sh",
+        "-c",
+        "npx prisma db push --accept-data-loss && npx prisma generate && npm start",
+      ]
 
   postgres:
     image: postgres:15-alpine
