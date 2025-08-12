@@ -12,7 +12,12 @@ services:
         condition: service_healthy
     networks:
       - workflow-network
-    command: ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma generate && npm start"]
+    command:
+      [
+        "sh",
+        "-c",
+        "npx prisma db push --accept-data-loss && npx prisma generate && npx prisma db seed && npm start",
+      ]
 
   postgres:
     image: postgres:15-alpine
@@ -24,7 +29,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./prisma/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     networks:
       - workflow-network
     healthcheck:
